@@ -81,7 +81,7 @@ uint8_t prior_scheduler()
      */
     for (i = 1; i <= ReadyQueue.queue_size; i++) {
 #if defined(__XC16__) || defined(__dsPIC30F__) || defined(__dsPIC33F__) || defined(__dsPIC33E__)
-        uint8_t candidate = (uint8_t)__builtin_modsd(task_running + i, ReadyQueue.queue_size);
+        uint8_t candidate = (uint8_t)__builtin_modsd(task_running + i, ReadyQueue.queue_size); //rotação circular da fila
 #else
         uint8_t candidate = (uint8_t)((task_running + i) % ReadyQueue.queue_size);
 #endif

@@ -19,7 +19,7 @@ typedef struct tcb {
     callback task_func;
     state_t task_state;
     uint16_t task_stack[MAX_STACK_SIZE];
-    uint16_t *sp;
+    uint16_t *sp; //Stack Pointer - ponteiro da pilha
 } tcb_t;
 
 typedef struct queue {

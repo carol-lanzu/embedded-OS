@@ -12,9 +12,9 @@ void init_stack(tcb_t *task);
 void os_config(void);
 void os_start_scheduler(void);
 
-void task_yield();
-void task_delay();
-void delay_release();
+void task_yield(void);
+void task_delay(uint16_t time);
+void delay_release(void);
 
 TASK idle();
 

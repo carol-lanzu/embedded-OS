@@ -6,7 +6,7 @@
 #define ON                  1
 #define OFF                 0
 
-#define MAX_TASKS           5
+#define MAX_TASKS           8
 #define MAX_STACK_SIZE      128
 #define SIZE_MESSAGE_QUEUE  4
 #define HEAP_SIZE           1024

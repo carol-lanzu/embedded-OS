@@ -1,26 +1,6 @@
-/**
- * ============================================================================
- * @file    adc.c
- * @brief   Implementacao do driver do Conversor AD (ADC1) para dsPIC/PIC24.
- * @details Modulo de conversao analogico-digital configurado em modo polling,
- *          sem uso de interrupcoes, com amostragem manual via bit SAMP e
- *          protecao de timeout na leitura sincrona.
- * ============================================================================
- */
-
 #include <xc.h>
 #include "adc.h"
 
-/**
- * @brief Inicializa e configura os registradores do ADC1.
- * @details Segue a ordem de configuracao padrao dos microcontroladores dsPIC/PIC24:
- *          Passo 1: Configuracao dos pinos em AD1PCFG (0 = analogico, 1 = digital).
- *          Passo 2: Selecao inicial de canal em AD1CHS (MUX A e referencias).
- *          Passo 3: Temporizacao em AD1CON3 (TAD, divisor ADCS e fonte de clock).
- *          Passo 4: Modos de operacao em AD1CON2 (referencias VDD/VSS, MUX A, buffer).
- *          Passo 5: Modos de operacao em AD1CON1 (formato inteiro, disparo manual SAMP).
- *          Passo 6: Habilitacao do modulo (AD1CON1bits.ADON = 1).
- */
 void adc_init(void)
 {
     /* Garante que o modulo esteja desligado durante a escrita dos registradores */

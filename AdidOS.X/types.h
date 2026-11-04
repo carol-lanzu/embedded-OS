@@ -36,7 +36,13 @@ typedef struct sem
 } sem_t;
 
 typedef struct mutex {
-    
+    uint8_t lock;                   // 0 = destravado, 1 = travado
+    uint8_t owner;                  // Tarefa que possui o mutex atualmente
+    uint8_t orig_prior;             // Prioridade original da tarefa proprietaria (antes de herdar)
+    uint8_t wait_queue[MAX_TASKS];  // Fila circular de tarefas bloqueadas
+    uint8_t wait_count;             // Quantidade de tarefas aguardando
+    uint8_t q_in;                   // Indice de insercao na fila circular
+    uint8_t q_out;                  // Indice de remocao na fila circular
 } mutex_t;
 
 typedef struct m_queue {

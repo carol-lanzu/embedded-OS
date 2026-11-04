@@ -54,15 +54,64 @@ void sem_post(sem_t *s)
 
 void mutex_init(mutex_t *m)
 {
-    
+    m->locked       = 0;
+    m->owner        = 0;
+    m->wq_input     = 0;
+    m->wq_output    = 0;
+    m->wq_count     = 0;
 }
 
 void mutex_lock(mutex_t *m)
 {
-    
+    __builtin_disable_interrupts();
+
+    if (m->locked == 0) {
+        m->locked = 1;
+        m->owner  = task_running;
+    } else {
+        // Herança de prioridade (valor maior = prioridade maior)
+        if (ReadyQueue.tasks[m->owner].task_prior < ReadyQueue.tasks[task_running].task_prior) {
+            ReadyQueue.tasks[m->owner].task_prior = ReadyQueue.tasks[task_running].task_prior;
+        }
+
+        // Bloqueia a tarefa
+        m->wait_queue[m->wq_input] = task_running;
+        m->wq_input = __builtin_modsd(m->wq_input+1, MAX_TASKS);
+        m->wq_count++;
+        ReadyQueue.tasks[task_running].task_state = BLOCKED;
+        CONTEXT_SWITCH();
+    }
+
+    __builtin_enable_interrupts();
 }
 
 void mutex_unlock(mutex_t *m)
 {
-    
+    uint8_t next;
+
+    __builtin_disable_interrupts();
+
+    // Só o dono pode liberar
+    if (m->locked == 0 || m->owner != task_running) {
+        __builtin_enable_interrupts();
+        return;
+    }
+
+    // Limitação: volta direto para a prioridade base (não trata tarefa com dois mutex)
+    ReadyQueue.tasks[task_running].task_prior = ReadyQueue.tasks[task_running].task_base_prior;
+
+    if (m->wq_count > 0) {
+        // O mutex passa direto para o primeiro da fila
+        next = m->wait_queue[m->wq_output];
+        m->wq_output = __builtin_modsd(m->wq_output+1, MAX_TASKS);
+        m->wq_count--;
+        m->owner = next;
+        ReadyQueue.tasks[next].task_state = READY;
+        ReadyQueue.tasks[task_running].task_state = READY;
+        CONTEXT_SWITCH();
+    } else {
+        m->locked = 0;
+    }
+
+    __builtin_enable_interrupts();
 }

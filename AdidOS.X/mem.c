@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 
-uint8_t heap_mem[HEAP_SIZE];
+// Alinhado em 2: o PIC24 gera trap ao ler uma word em endereço ímpar
+uint8_t heap_mem[HEAP_SIZE] __attribute__((aligned(2)));
 
 
 void os_heap_init(void)

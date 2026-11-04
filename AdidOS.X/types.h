@@ -15,10 +15,15 @@ typedef enum {READY = 0, RUNNING, WAITING, BLOCKED} state_t;
 typedef struct tcb {
     uint8_t task_id;
     uint8_t task_prior;
+    uint8_t task_base_prior;
     uint16_t task_delay;
     callback task_func;
     state_t task_state;
+#if DYNAMIC_ALLOCATION == ON
+    uint16_t *task_stack;
+#else
     uint16_t task_stack[MAX_STACK_SIZE];
+#endif
     uint16_t *sp;
 } tcb_t;
 
@@ -36,7 +41,12 @@ typedef struct sem
 } sem_t;
 
 typedef struct mutex {
-    
+    uint8_t locked;
+    uint8_t owner;
+    uint8_t wait_queue[MAX_TASKS];
+    uint8_t wq_input;
+    uint8_t wq_output;
+    uint8_t wq_count;
 } mutex_t;
 
 typedef struct m_queue {

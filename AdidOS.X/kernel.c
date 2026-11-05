@@ -22,7 +22,7 @@ void os_config(void)
     os_heap_init();
     #endif
     
-    create_task(idle, 4);
+    create_task(idle, PRIORITY_IDLE);
 }
 
 void os_start_scheduler(void)
